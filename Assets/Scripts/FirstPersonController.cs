@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class FirstPersonController : MonoBehaviour
 {
     //timers and values for speed
+    public bool canMove = true;
     public float currentSpeed, walkSpeed, sprintSpeed;
     public float scrollSpeed = 2.0f;
     float sprintTimer = 0;
@@ -60,31 +61,36 @@ public class FirstPersonController : MonoBehaviour
 
     void Update()
     {
-        //WASD controls
-        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) ||
-            Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))
+        if (canMove)
         {
-            moving = true;
+            //WASD controls
+            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) ||
+                Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))
+            {
+                moving = true;
 
-            float moveForwardBackward = Input.GetAxis("Vertical") * currentSpeed;
-            float moveLeftRight = Input.GetAxis("Horizontal") * currentSpeed;
+                float moveForwardBackward = Input.GetAxis("Vertical") * currentSpeed;
+                float moveLeftRight = Input.GetAxis("Horizontal") * currentSpeed;
 
-            movement = new Vector3(moveLeftRight, 0, moveForwardBackward);
+                movement = new Vector3(moveLeftRight, 0, moveForwardBackward);
 
-            SprintSpeed();
+                SprintSpeed();
+            }
+            //when not moving
+            else
+            {
+                moving = false;
+                movement = Vector3.zero;
+                currentSpeed = walkSpeed;
+            }
+            
+            movement = transform.rotation * movement;
+            player.Move(movement * Time.deltaTime);
+
+            player.Move(new Vector3(0, -0.5f, 0));
         }
-        //when not moving
-        else
-        {
-            moving = false;
-            movement = Vector3.zero;
-            currentSpeed = walkSpeed;
-        }
+       
 
-        movement = transform.rotation * movement;
-        player.Move(movement * Time.deltaTime);
-
-        player.Move(new Vector3(0, -0.5f, 0));
 
         //PlayerBounding();
 

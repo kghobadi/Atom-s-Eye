@@ -15,7 +15,7 @@ public class Radio : MonoBehaviour
 
     //sound , vo and statics
     AudioSource radioSource;
-    public AudioSource staticSource;
+    public AudioSource staticSource, knobSource;
     public AudioClip[] staticSounds;
     public List<AudioClip> voiceOvers = new List<AudioClip>();
     public int currentVO=0;
@@ -33,6 +33,7 @@ public class Radio : MonoBehaviour
     //visual for changing station
     public GameObject knob;
     public float minKnobRotation, maxKnobRotation;
+    public AudioClip[] tuneUps, tuneDowns;
 
     //2d obj to show radio making noise
     public GameObject radioWaves;
@@ -60,11 +61,13 @@ public class Radio : MonoBehaviour
             if (Input.GetAxis("Mouse ScrollWheel") > 0)
             {
                 currentStation += Input.GetAxis("Mouse ScrollWheel") * Time.deltaTime * changeStationSpeed;
+                PlayTune(tuneUps);
             }
             //tune down
             else if (Input.GetAxis("Mouse ScrollWheel") < 0)
             {
                 currentStation += Input.GetAxis("Mouse ScrollWheel") * Time.deltaTime * changeStationSpeed;
+                PlayTune(tuneDowns);
             }
         }
         
@@ -110,6 +113,7 @@ public class Radio : MonoBehaviour
 
                     radioSource.volume = foundSignalVolT;
 
+                    fpc.canMove = true;
                     staticSource.Stop();
                     Debug.Log("found broadcast");
                 }
@@ -119,14 +123,13 @@ public class Radio : MonoBehaviour
         //need to check when a broadcast has finished
         if (listeningToBroadcast)
         {
-            //can alter player movement to slow them down
-            fpc.sprintSpeed = fpc.walkSpeed;
-
+            //hard set move speed 
+            fpc.currentSpeed = 2.5f;
             if(radioSource.isPlaying == false)
             {
                 Debug.Log("finished broadcast");
                 listeningToBroadcast = false;
-                fpc.sprintSpeed = 10f;
+                fpc.currentSpeed = fpc.walkSpeed;
             }
         }
 
@@ -154,11 +157,18 @@ public class Radio : MonoBehaviour
         radioSource.volume = initialVolTransmisision;
   
         searchingForBroadcast = true;
+        fpc.canMove = false;
         waitTimer = 0;
 
         //play both audio sources
         PlayStatic();
         PlayTransmission(transmissionNum);
+    }
+
+    void PlayTune(AudioClip [] tunes)
+    {
+        int randomTune = Random.Range(0, tunes.Length);
+        knobSource.PlayOneShot(tunes[randomTune]);
     }
 
     void PlayStatic()
