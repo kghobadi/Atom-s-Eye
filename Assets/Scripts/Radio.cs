@@ -42,6 +42,8 @@ public class Radio : MonoBehaviour
     //2d obj to show radio making noise
     public GameObject radioWaves;
     public Vector3 currentPoint;
+
+    public bool ending;
     
     void Start()
     {
@@ -101,7 +103,11 @@ public class Radio : MonoBehaviour
                 }
             }
         }
-        
+
+        if (ending)
+        {
+            fpc.ending = true;
+        }
 
         //lowest station wrap
         if(currentStation < stationMin)

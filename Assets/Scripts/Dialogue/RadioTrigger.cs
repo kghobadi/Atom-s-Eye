@@ -7,7 +7,7 @@ public class RadioTrigger : MonoBehaviour
     Radio radioScript;
     public int transmission;
     public bool hasActivated;
-
+    public bool isEnding;
     public Transform pointOfInterest;
 
     void Start()
@@ -25,6 +25,10 @@ public class RadioTrigger : MonoBehaviour
                 if (!radioScript.searchingForBroadcast && !radioScript.listeningToBroadcast)
                 {
                     radioScript.ActivateRadio(transmission, pointOfInterest);
+                    if (isEnding)
+                    {
+                        radioScript.ending = true;
+                    }
                     hasActivated = true;
                 }
             }

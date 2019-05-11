@@ -50,6 +50,8 @@ public class FirstPersonController : MonoBehaviour
     //for static ghosts
     public List<Transform> followSpots = new List<Transform>();
 
+    public bool ending;
+
     void Start()
     {
         player = GetComponent<CharacterController>();

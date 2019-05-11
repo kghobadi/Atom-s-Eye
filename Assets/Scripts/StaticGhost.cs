@@ -31,6 +31,11 @@ public class StaticGhost : MonoBehaviour
         ghostAnimator = GetComponent<Animator>();
         ghostSource = GetComponent<AudioSource>();
     }
+
+    //when player reaches the ending, shift animator to end state
+    //this will flash sprites between black and white and have them orbit player
+    //as the transmission ends, portal opens at the top of the radio tower
+    // you lerp into it and game is over
     
     void Update()
     {
