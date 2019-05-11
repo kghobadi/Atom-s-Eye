@@ -10,6 +10,10 @@ public class Radio : MonoBehaviour
     GameObject player;
     FirstPersonController fpc;
 
+    //for game start
+    public bool hasStarted;
+    public FadeUI[] startFades;
+
     //animator ref
     Animator radioAnimator;
 
@@ -37,6 +41,7 @@ public class Radio : MonoBehaviour
 
     //2d obj to show radio making noise
     public GameObject radioWaves;
+    public Vector3 currentPoint;
     
     void Start()
     {
@@ -62,12 +67,38 @@ public class Radio : MonoBehaviour
             {
                 currentStation += Input.GetAxis("Mouse ScrollWheel") * Time.deltaTime * changeStationSpeed;
                 PlayTune(tuneUps);
+
+                //on start
+                if (!hasStarted)
+                {
+                    for( int i = 0; i < startFades.Length; i++)
+                    {
+                        startFades[i].fadingIn = false;
+                        startFades[i].StopAllCoroutines();
+                        startFades[i].fadingOut = true;
+                    }
+                    fpc.canMove = true;
+                    hasStarted = true;
+                }
             }
             //tune down
             else if (Input.GetAxis("Mouse ScrollWheel") < 0)
             {
                 currentStation += Input.GetAxis("Mouse ScrollWheel") * Time.deltaTime * changeStationSpeed;
                 PlayTune(tuneDowns);
+
+                //on start
+                if (!hasStarted)
+                {
+                    for (int i = 0; i < startFades.Length; i++)
+                    {
+                        startFades[i].fadingIn = false;
+                        startFades[i].StopAllCoroutines();
+                        startFades[i].fadingOut = true;
+                    }
+                    fpc.canMove = true;
+                    hasStarted = true;
+                }
             }
         }
         
@@ -90,6 +121,8 @@ public class Radio : MonoBehaviour
         if (searchingForBroadcast)
         {
             float dif = Mathf.Abs(currentStation - necessaryStation);
+
+            fpc.transform.position = Vector3.MoveTowards(fpc.transform.position, currentPoint, 3 * Time.deltaTime);
 
             //play new static when it is no longer playing
             if(staticSource.isPlaying == false)
@@ -144,18 +177,57 @@ public class Radio : MonoBehaviour
         }
     }
 
+    //could just randomly attribute all the VOs to dif channels at start
+    //then they could be accessible in any order
+    //static until you land on it, then it plays in full and you cant change channel until over
+    //can forget about triggers this way
+    //could do both??
+
     //called by Radio Trigger obj when player enters
-    public void ActivateRadio(int transmissionNum)
+    public void ActivateRadio(int transmissionNum, Transform pointToGoTo)
     {
         //set nec station and range
         necessaryStation = Random.Range(stationMin + necessaryRange, stationMax - necessaryRange);
         necMin = necessaryStation - necessaryRange;
         necMax = necessaryStation + necessaryRange;
 
+        float dist = Mathf.Abs(currentStation - necessaryStation);
+        //if its too close to current station val
+        if(dist < 2)
+        {
+            //current station is less than necessary station, add to it
+            if(currentStation < necessaryStation)
+            {
+                if (necessaryStation < stationMax - 2)
+                {
+                    necessaryStation += 2;
+                }
+                else
+                {
+                    necessaryStation = stationMin + 1f;
+                }
+            }
+
+            //current station is greater than necessaryStation so subtract from it
+            else
+            {
+                if(necessaryStation > stationMin + 2)
+                {
+                    necessaryStation -= 2;
+                }
+                else
+                {
+                    necessaryStation = stationMax - 2;
+                }
+            }
+           
+        }
+
         //set initial volumes
         staticSource.volume = initialVolStatic;
         radioSource.volume = initialVolTransmisision;
-  
+
+        currentPoint = pointToGoTo.position;
         searchingForBroadcast = true;
         fpc.canMove = false;
         waitTimer = 0;

@@ -26,7 +26,8 @@ public class Fence : MonoBehaviour
             if (fenceSource.isPlaying == false)
             {
                 int randomSound = Random.Range(0, fenceSounds.Length);
-
+                float randomPitch = Random.Range(0.85f, 1.15f);
+                fenceSource.pitch = randomPitch;
                 fenceSource.PlayOneShot(fenceSounds[randomSound]);
             }
         }

@@ -8,9 +8,12 @@ public class RadioTrigger : MonoBehaviour
     public int transmission;
     public bool hasActivated;
 
+    public Transform pointOfInterest;
+
     void Start()
     {
         radioScript = GameObject.FindGameObjectWithTag("Radio").GetComponent<Radio>();
+        pointOfInterest = transform.GetChild(0);
     }
 
     void OnTriggerEnter(Collider other)
@@ -21,7 +24,7 @@ public class RadioTrigger : MonoBehaviour
             {
                 if (!radioScript.searchingForBroadcast && !radioScript.listeningToBroadcast)
                 {
-                    radioScript.ActivateRadio(transmission);
+                    radioScript.ActivateRadio(transmission, pointOfInterest);
                     hasActivated = true;
                 }
             }

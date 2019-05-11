@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class FirstPersonController : MonoBehaviour
 {
     //timers and values for speed
-    public bool canMove = true;
+    public bool canMove ;
     public float currentSpeed, walkSpeed, sprintSpeed;
     public float scrollSpeed = 2.0f;
     float sprintTimer = 0;
@@ -46,6 +46,9 @@ public class FirstPersonController : MonoBehaviour
     public bool spawnFootsteps, leftOrRightFoot;
     public GameObject leftFoot, rightFoot;
     public Transform footstepParent;
+
+    //for static ghosts
+    public List<Transform> followSpots = new List<Transform>();
 
     void Start()
     {
