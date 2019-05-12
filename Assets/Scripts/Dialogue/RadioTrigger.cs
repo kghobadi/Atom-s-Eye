@@ -10,6 +10,9 @@ public class RadioTrigger : MonoBehaviour
     public bool isEnding;
     public Transform pointOfInterest;
 
+    public GameObject endingPortal;
+    public GameObject[] clouds;
+
     void Start()
     {
         radioScript = GameObject.FindGameObjectWithTag("Radio").GetComponent<Radio>();
@@ -24,11 +27,19 @@ public class RadioTrigger : MonoBehaviour
             {
                 if (!radioScript.searchingForBroadcast && !radioScript.listeningToBroadcast)
                 {
-                    radioScript.ActivateRadio(transmission, pointOfInterest);
                     if (isEnding)
                     {
                         radioScript.ending = true;
+                        endingPortal.SetActive(true);
+                        Debug.Log("This is the end!!!");
+                        for(int i = 0; i < clouds.Length; i++)
+                        {
+                            clouds[i].SetActive(true);
+                        }
                     }
+
+                    radioScript.ActivateRadio(transmission, pointOfInterest);
+                  
                     hasActivated = true;
                 }
             }

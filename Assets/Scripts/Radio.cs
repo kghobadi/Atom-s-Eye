@@ -44,6 +44,8 @@ public class Radio : MonoBehaviour
     public Vector3 currentPoint;
 
     public bool ending;
+    public AudioClip thunder;
+    public FadeUI[] endingFades;
     
     void Start()
     {
@@ -104,10 +106,7 @@ public class Radio : MonoBehaviour
             }
         }
 
-        if (ending)
-        {
-            fpc.ending = true;
-        }
+     
 
         //lowest station wrap
         if(currentStation < stationMin)
@@ -131,7 +130,7 @@ public class Radio : MonoBehaviour
             fpc.transform.position = Vector3.MoveTowards(fpc.transform.position, currentPoint, 3 * Time.deltaTime);
 
             //play new static when it is no longer playing
-            if(staticSource.isPlaying == false)
+            if(staticSource.isPlaying == false && !ending)
             {
                 PlayStatic();
             }
@@ -169,6 +168,23 @@ public class Radio : MonoBehaviour
                 Debug.Log("finished broadcast");
                 listeningToBroadcast = false;
                 fpc.currentSpeed = fpc.walkSpeed;
+
+                if (ending)
+                {
+                    //END GAME
+                    Debug.Log("ENDING");
+                    //LIGHTNING STRIKES AND GAME CUTS TO BLACK
+                    radioSource.clip = thunder;
+                    radioSource.loop = true;
+                    radioSource.Play();
+
+                    //fade in ending banner
+                    for(int i = 0; i < endingFades.Length; i++)
+                    {
+                        endingFades[i].gameObject.SetActive(true);
+                        endingFades[i].fadingIn = true;
+                    }
+                }
             }
         }
 
@@ -229,9 +245,18 @@ public class Radio : MonoBehaviour
            
         }
 
+        if (ending)
+        {
+            fpc.ending = true;
+            listeningToBroadcast = true;
+        }
+
         //set initial volumes
-        staticSource.volume = initialVolStatic;
-        radioSource.volume = initialVolTransmisision;
+        if (!ending)
+        {
+            staticSource.volume = initialVolStatic;
+            radioSource.volume = initialVolTransmisision;
+        }
 
         currentPoint = pointToGoTo.position;
         searchingForBroadcast = true;
@@ -239,7 +264,10 @@ public class Radio : MonoBehaviour
         waitTimer = 0;
 
         //play both audio sources
-        PlayStatic();
+        if (!ending)
+        {
+            PlayStatic();
+        }
         PlayTransmission(transmissionNum);
     }
 

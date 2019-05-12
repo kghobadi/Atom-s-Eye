@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/the hang.unity
+    guid: 6a45b75e9f5cdef498713de4205c9fdc
   m_configObjects: {}

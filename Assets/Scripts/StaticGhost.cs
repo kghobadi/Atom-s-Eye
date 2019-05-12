@@ -21,6 +21,9 @@ public class StaticGhost : MonoBehaviour
     public AudioClip[] spookSounds;
     float dist;
 
+    public bool ending;
+    public float orbitalSpeed;
+
     void Start()
     {
         //player refs
@@ -41,32 +44,54 @@ public class StaticGhost : MonoBehaviour
     {
         dist = Vector3.Distance(transform.position, player.transform.position);
 
-        //assign following if player approaches
-        if (dist < followDist && !following)
-        {
-            //can follow player
-            if(fpc.followSpots.Count > 0)
-                AssignFollowSpot();
-
-            //walk towards the north
-            else
+        if (!ending)
+        { 
+            //assign following if player approaches
+            if (dist < followDist && !following)
             {
-                fadeScript.fadingOut = true;
+                //can follow player
+                if (fpc.followSpots.Count > 0)
+                    AssignFollowSpot();
+
+                //walk towards the north
+                else
+                {
+                    fadeScript.fadingOut = true;
+                }
+            }
+
+            if (following)
+            {
+                //look at player
+                transform.LookAt(playerCam.transform.position, Vector3.up);
+
+                if(fpc.currentSpeed > 0)
+                {
+                    //always half the speed of the player
+                    followSpeed = fpc.currentSpeed / 1.75f;
+                }
+                else
+                {
+                    followSpeed = 1f;
+                }
+
+                Vector3 point = new Vector3(pointToFollow.position.x, fpc.transform.position.y + 2f, pointToFollow.position.z);
+                //move after player
+                transform.position = Vector3.MoveTowards(transform.position, point, followSpeed * Time.deltaTime);
             }
         }
 
-        if (following)
+        //ending logic
+        else
         {
+            //rotate around player
+            transform.RotateAround(fpc.transform.position, Vector3.up, orbitalSpeed * Time.deltaTime);
+
             //look at player
             transform.LookAt(playerCam.transform.position, Vector3.up);
-            //always half the speed of the player
-            followSpeed = fpc.currentSpeed / 2;
 
-            Vector3 point = new Vector3(pointToFollow.position.x, fpc.transform.position.y + 2f, pointToFollow.position.z);
-            //move after player
-            transform.position = Vector3.MoveTowards(transform.position, point, followSpeed * Time.deltaTime);
+            PlaySpookSound();
         }
-        
     }
 
     //get assigned random follow spot from player
@@ -81,15 +106,39 @@ public class StaticGhost : MonoBehaviour
         following = true;
     }
 
+    //called by player script when radio end
+    public void SetEnding(int endingPoint)
+    {
+        transform.position = fpc.endingSpots[endingPoint].position;
+
+        //set the Y pos
+        transform.position = new Vector3(transform.position.x, transform.position.y + 2, transform.position.z);
+
+        transform.SetParent(fpc.transform);
+
+        orbitalSpeed = Random.Range(75f, 150f);
+
+        ghostAnimator.SetBool("ending", true);
+
+        StartCoroutine(StartAnimator());
+
+        transform.localScale *= 2;
+
+        ending = true;
+    }
+
     //called when the Renderer comp becomes visible to any camera
     void OnBecameInvisible()
     {
-        fadeScript.fadingIn = true;
-        fadeScript.fadingOut = false;
+        if (!ending)
+        {
+            fadeScript.fadingIn = true;
+            fadeScript.fadingOut = false;
 
-        //stop animator
-        if (ghostAnimator.enabled)
-            ghostAnimator.enabled = false;
+            //stop animator
+            if (ghostAnimator.enabled)
+                ghostAnimator.enabled = false;
+        }
     }
 
 
@@ -104,18 +153,22 @@ public class StaticGhost : MonoBehaviour
     //turn on animator
     void OnBecameVisible()
     {
-        fadeScript.fadingIn = false;
-        fadeScript.fadingOut = true;
-        
-        if(dist < followDist)
+        if (!ending)
         {
-            PlaySpookSound();
-        }
+            fadeScript.fadingIn = false;
+            fadeScript.fadingOut = true;
 
-        if (!ghostAnimator.enabled)
-        {
-            StartCoroutine(StartAnimator());
+            if (dist < followDist)
+            {
+                PlaySpookSound();
+            }
+
+            if (!ghostAnimator.enabled)
+            {
+                StartCoroutine(StartAnimator());
+            }
         }
+      
     }
 
     void PlaySpookSound()

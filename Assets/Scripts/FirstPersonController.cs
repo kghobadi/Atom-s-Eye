@@ -49,8 +49,9 @@ public class FirstPersonController : MonoBehaviour
 
     //for static ghosts
     public List<Transform> followSpots = new List<Transform>();
-
-    public bool ending;
+    public List<Transform> endingSpots = new List<Transform>();
+    public StaticGhost[] ghosts;
+    public bool ending, setEnd;
 
     void Start()
     {
@@ -95,7 +96,15 @@ public class FirstPersonController : MonoBehaviour
             player.Move(new Vector3(0, -0.5f, 0));
         }
        
-
+        //to call set ending in all ghosts
+        if(ending && !setEnd)
+        {
+            for(int i = 0; i < ghosts.Length; i++)
+            {
+                ghosts[i].SetEnding(i);
+            }
+            setEnd = true;
+        }
 
         //PlayerBounding();
 
@@ -160,12 +169,12 @@ public class FirstPersonController : MonoBehaviour
         GameObject footprint = null;
         if (leftOrRightFoot)
         {
-            spawnPos += new Vector3(-0.3f, 0, 0);
+            spawnPos += new Vector3(0, 0, 0.3f);
             footprint = Instantiate(leftFoot, spawnPos, Quaternion.identity, transform);
         }
         else
         {
-            spawnPos += new Vector3(0.3f, 0, 0);
+            spawnPos += new Vector3(0, 0, -0.3f);
             footprint = Instantiate(rightFoot, spawnPos, Quaternion.identity, transform);
         }
 
