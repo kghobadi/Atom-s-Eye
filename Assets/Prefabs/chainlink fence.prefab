@@ -16,7 +16,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &3989574492868950801
 Transform:
@@ -87,12 +87,13 @@ GameObject:
   m_Component:
   - component: {fileID: 3989574492868950803}
   - component: {fileID: 3777631748438509996}
+  - component: {fileID: 2397702915426411000}
   m_Layer: 0
   m_Name: chainlink fence
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &3989574492868950803
 Transform:
@@ -125,6 +126,20 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 8, y: 6, z: 0.5}
   m_Center: {x: -3.8, y: 1, z: 0}
+--- !u!114 &2397702915426411000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3989574492869240627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbcddab270028b846a88a4ff98ca869f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  usesActDist: 1
+  activationDist: 75
 --- !u!1 &3989574492869240631
 GameObject:
   m_ObjectHideFlags: 0
@@ -141,7 +156,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &3989574492868950807
 Transform:
@@ -222,7 +237,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &3989574492868950839
 Transform:
@@ -440,7 +455,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &3989574492868950879
 Transform:

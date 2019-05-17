@@ -90,7 +90,7 @@ public class StaticGhost : MonoBehaviour
             //look at player
             transform.LookAt(playerCam.transform.position, Vector3.up);
 
-            PlaySpookSound();
+            PlaySpookSound(0.25f);
         }
     }
 
@@ -123,6 +123,8 @@ public class StaticGhost : MonoBehaviour
         StartCoroutine(StartAnimator());
 
         transform.localScale *= 2;
+
+        PlaySpookSound(0.5f);
 
         ending = true;
     }
@@ -160,7 +162,7 @@ public class StaticGhost : MonoBehaviour
 
             if (dist < followDist)
             {
-                PlaySpookSound();
+                PlaySpookSound(0.5f);
             }
 
             if (!ghostAnimator.enabled)
@@ -171,12 +173,12 @@ public class StaticGhost : MonoBehaviour
       
     }
 
-    void PlaySpookSound()
+    void PlaySpookSound(float vol)
     {
         int randomSpook = Random.Range(0, spookSounds.Length);
         if(ghostSource.isPlaying == false)
         {
-            ghostSource.PlayOneShot(spookSounds[randomSpook]);
+            ghostSource.PlayOneShot(spookSounds[randomSpook], vol);
         }
     }
 }

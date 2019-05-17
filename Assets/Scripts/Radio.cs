@@ -135,6 +135,13 @@ public class Radio : MonoBehaviour
                 PlayStatic();
             }
 
+            //broadcast ended, you missed it
+            if (radioSource.isPlaying == false)
+            {
+                searchingForBroadcast = false;
+                fpc.canMove = true;
+            }
+
             //within nec range
             if(currentStation < necMax && currentStation > necMin)
             {
@@ -153,6 +160,7 @@ public class Radio : MonoBehaviour
 
                     fpc.canMove = true;
                     staticSource.Stop();
+                    radioText.color = Color.red;
                     Debug.Log("found broadcast");
                 }
             }
@@ -163,11 +171,21 @@ public class Radio : MonoBehaviour
         {
             //hard set move speed 
             fpc.currentSpeed = 2.5f;
-            if(radioSource.isPlaying == false)
+
+
+            if (ending)
+            {
+                fpc.transform.position = Vector3.MoveTowards(fpc.transform.position, currentPoint, 3 * Time.deltaTime);
+                fpc.canMove = false;
+            }
+
+            if (radioSource.isPlaying == false)
             {
                 Debug.Log("finished broadcast");
                 listeningToBroadcast = false;
                 fpc.currentSpeed = fpc.walkSpeed;
+
+                radioText.color = Color.black;
 
                 if (ending)
                 {
@@ -256,18 +274,15 @@ public class Radio : MonoBehaviour
         {
             staticSource.volume = initialVolStatic;
             radioSource.volume = initialVolTransmisision;
+            searchingForBroadcast = true;
+            PlayStatic();
         }
 
         currentPoint = pointToGoTo.position;
-        searchingForBroadcast = true;
         fpc.canMove = false;
         waitTimer = 0;
 
         //play both audio sources
-        if (!ending)
-        {
-            PlayStatic();
-        }
         PlayTransmission(transmissionNum);
     }
 

@@ -7,12 +7,15 @@ public class Mountain : MonoBehaviour
     //player variables
     GameObject player;
     FirstPersonController fpc;
+    WorldManager wm;
 
     void Start()
     {
         //player refs
         player = GameObject.FindGameObjectWithTag("Player");
         fpc = player.GetComponent<FirstPersonController>();
+        wm = GameObject.FindGameObjectWithTag("WorldManager").GetComponent<WorldManager>();
+
     }
 
     void OnTriggerEnter(Collider other)
@@ -21,6 +24,8 @@ public class Mountain : MonoBehaviour
         {
             fpc.spawnFootsteps = false;
             fpc.currentFootsteps = fpc.pathFootsteps;
+            Camera.main.farClipPlane = 250;
+            wm.activationDistance = 150f;
         }
     }
 
